@@ -1,5 +1,19 @@
 from bitarray import bitarray
 import numpy as np
+import binascii
+
+def text_to_bits(text, encoding='utf-8', errors='surrogatepass'):
+    bits = bin(int(binascii.hexlify(text.encode(encoding, errors)), 16))[2:]
+    return bits.zfill(8 * ((len(bits) + 7) // 8))
+
+def text_from_bits(bits):
+    return binascii.unhexlify('%x' % int('0b'+bits, 2))
+
+def int2bytes(i):
+    hex_string = '%x' % i
+    n = len(hex_string)
+    return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
+
 
 
 # Fonction qui prend en parametre la cle et effectue une permutation P10
@@ -33,14 +47,5 @@ def generate_k1_k2(key):
     k2 = permetutation_p8(circular_left_shift(divide_2_parts_circular, -2))
     return(k1,k2)
 
-
-def showMessage(list):
-    show = ""
-    for  i  in list :
-        if (i == False) :
-            show+=" 0"
-        else :
-            show+=" 1"
-    print show
-
-
+def print_code(code):
+     print ''.join(str(e) for e in code*1)

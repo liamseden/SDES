@@ -69,9 +69,21 @@ def generate_fk(ip_permutation,k):
     return(r_11)
 
 
-def encrypt_bloc (bloc,k1,k2):
-    messageIP = permutation_ip(bloc)
+def encrypt_bloc (bloc,key):
+    k1, k2 = generate_k1_k2(key)
+    message = np.array(bitarray(bloc).tolist())
+    messageIP = permutation_ip(message)
     fk_k1 = generate_fk(messageIP, k1)
     switch_fk_k1 = switch(fk_k1)
     fk_k2 = generate_fk(switch_fk_k1, k2)
     return permutation_ip1(fk_k2)
+
+#Encrypt with S-DES a ASCII string
+def encrypt_message (message,key):
+    result = np.array([],dtype=bool)
+    for character in message:
+        binaryChar = text_to_bits(character)
+        test = encrypt_bloc(binaryChar, key)
+        result = np.concatenate((result, test), axis=0)
+    return result
+
